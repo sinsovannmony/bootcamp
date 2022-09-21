@@ -1,0 +1,15 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "Mony167168",
+  "database": "e-menu-db",
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true,
+  "migrations": ["dist/db/migrations/*.js"],
+  "cli": {
+    "migrationsDir": "src/db/migrations/"
+  },
+  "seeds": ["dist/db/seeds/*.js"]
+}

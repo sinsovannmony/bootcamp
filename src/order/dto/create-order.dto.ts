@@ -7,4 +7,12 @@ export class CreateOrderDto {
   @IsNumber()
   @IsNotEmpty()
   food: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  lat: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  long: number;
 }

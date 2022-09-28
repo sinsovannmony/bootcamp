@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { Food } from 'src/menu/entities/food.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Order } from './entities/order.entity';
+import { checkLocation } from 'src/validation/check.location';
 
 @Injectable()
 export class OrderService {
@@ -13,9 +13,20 @@ export class OrderService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Food) private foodRepo: Repository<Food>,
     @InjectRepository(Order) private orderRepo: Repository<Order>,
+    private checkLocation: checkLocation,
   ) {}
   async createOrder(user: any, createOrderDto: CreateOrderDto) {
     try {
+      const result = this.checkLocation.check(
+        createOrderDto.lat,
+        createOrderDto.long,
+      );
+      if (!result)
+        return {
+          statusCode: 404,
+          msg: "User didn't in the shop area",
+          data: null,
+        };
       const { totalPrice, food } = createOrderDto;
       const selectedFood = await this.foodRepo.findOne({
         where: { id: food },
@@ -105,6 +116,25 @@ export class OrderService {
         msg: 'order deleted successfully',
         data: deletedFood,
       };
+    } catch (error) {
+      return {
+        statusCode: 502,
+        msg: error.message,
+        data: null,
+      };
+    }
+  }
+
+  async checklocation() {
+    try {
+      const shoplong = 12.4;
+      const shopla = 1.25;
+      const userlong = 11;
+      const userla = 2.25;
+      var xDiff = shoplong - userlong;
+      var yDiff = shopla - userla;
+      const result = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+      return result;
     } catch (error) {
       return {
         statusCode: 502,

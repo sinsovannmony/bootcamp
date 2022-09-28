@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { User, UserId } from 'src/auth/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/auth/passport/guards/jwt-auth.guard';
 
@@ -25,6 +24,7 @@ export class OrderController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.orderService.findAllOrder();
   }
